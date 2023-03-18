@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Conversor de Moeda</title>
+
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color:darkblue;
+        }
+        .container {
+            background-color:chartreuse;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://www.vamosparaparis.com/wp-content/uploads/2016/05/euro.jpg" alt="100">
+        <h1>Conversor de Moeda</h1>
+        <input type="number" id="inputValor" placeholder="Digite o valor" />
+        <select id="selectMoedaOrigem">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="BRL">BRL</option>
+        </select>
+        <select id="selectMoedaDestino">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="BRL">BRL</option>
+            
+        </select>
+        <button onclick="converter()">Converter</button>
+        <h2 id="resultado"></h2>
+    </div>
+
+    <script>
+        const api_url = "https://api.exchangerate-api.com/v4/latest/";
+        let rates;
+
+        async function buscarTaxas(moeda) {
+            const response = await fetch(api_url + moeda);
+            const data = await response.json();
+            rates = data.rates;
+        }
+
+        async function converter() {
+            const inputValor = document.getElementById('inputValor');
+            const selectMoedaOrigem = document.getElementById('selectMoedaOrigem');
+            const selectMoedaDestino = document.getElementById('selectMoedaDestino');
+            const resultado = document.getElementById('resultado');
+            const valor = parseFloat(inputValor.value);
+        
+            if (!rates || selectMoedaOrigem.value !== rates.base) 
+                await buscarTaxas(selectMoedaOrigem.value);
+            
+
+            const taxaConversao = rates[selectMoedaDestino.value];
+            resultado.textContent = (valor * taxaConversao).toFixed(2);
+            }
+    </script>
+</body>
+</html>
